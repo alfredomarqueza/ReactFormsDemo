@@ -4,9 +4,9 @@ import { useFormik, Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 
 
-const AddEmployeeComponent = () => {
+const AddEmployeeComponent = (props) => {
 
-    const [message, setMessage] = useState("");
+    const [message, setMessage] = useState("");    
 
     return (
 
@@ -39,6 +39,7 @@ const AddEmployeeComponent = () => {
                 body: JSON.stringify(values)
             }).then(r => r.json()).then(res => {
                 if (res) {
+                    props.refreshList();
                     setMessage('New Employee is Created Successfully');
                 }
             });
@@ -74,7 +75,7 @@ const AddEmployeeComponent = () => {
                         </p>
                         <button type="submit" disabled={props.isValid==false}>Create</button>
                     </Form>
-                    <p>{message}</p>
+                    <p style={{ color: 'green' }}>{message}</p>
                 </div>
             )}
         </Formik>

@@ -9,7 +9,7 @@ class EmployeeComponent extends React.Component {
       employees: [],
     };
 
-    this.refreshList = this.refreshList.bind(this);
+    //this.refreshList = this.refreshList.bind(this);
   }
 
 
@@ -17,7 +17,7 @@ class EmployeeComponent extends React.Component {
     this.refreshList();
   }
 
-  refreshList() {
+  refreshList=()=>{
     fetch("https://localhost:44314/api/Employee").then(res => res.json()).then(
 
       result => {
@@ -25,7 +25,7 @@ class EmployeeComponent extends React.Component {
         this.setState({ employees: result, errorMessage: "" });
       }
     ).catch((error) => {
-      this.setState({ employees: [],errorMessage: "Problem fetching data" });      
+      this.setState({ employees: [], errorMessage: "Problem fetching data" });
     });
   }
 
@@ -34,46 +34,49 @@ class EmployeeComponent extends React.Component {
 
     return (
       <div>
-        <h2>Employee Details...</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Name</th>
-              <th>Location</th>
-              <th>Salary</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.employees.map(emp => (
-              <tr key={emp.Id}>
-                <td>{emp.Id}</td>
-                <td>{emp.Name}</td>
-                <td>{emp.Location}</td>
-                <td>{emp.Salary}</td>
+        <div>
+          <h2>Employee Details...</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Salary</th>
               </tr>
+            </thead>
+            <tbody>
+              {this.state.employees.map(emp => (
+                <tr key={emp.Id}>
+                  <td>{emp.Id}</td>
+                  <td>{emp.Name}</td>
+                  <td>{emp.Location}</td>
+                  <td>{emp.Salary}</td>
+                </tr>
 
-            ))}
-          </tbody>
-        </table>
-            <p><b style={{color:"red"}}>{this.state.errorMessage}</b></p>
+              ))}
+            </tbody>
+          </table>
+          <p><b style={{ color: "red" }}>{this.state.errorMessage}</b></p>
+        </div>
+
+        <AddEmployeeComponent refreshList={this.refreshList} ></AddEmployeeComponent>
       </div>
-
     )
   }
 }
 
-class HomeComponent extends React.Component {
-  render() {
+// class HomeComponent extends React.Component {
+//   render() {
 
-    return (
-      <div>
-        <EmployeeComponent></EmployeeComponent><AddEmployeeComponent ></AddEmployeeComponent>
+//     return (
+//       <div>
+//         <EmployeeComponent></EmployeeComponent><AddEmployeeComponent ></AddEmployeeComponent>
 
-      </div>
-    )
-  }
-}
+//       </div>
+//     )
+//   }
+// }
 
-const element = <HomeComponent></HomeComponent>
+const element = <EmployeeComponent></EmployeeComponent>
 ReactDOM.render(element, document.getElementById("root"));
