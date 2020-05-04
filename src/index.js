@@ -1,17 +1,79 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import AddEmployeeComponent from './AddEmployeeComponent';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+class EmployeeComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      employees: [],
+    };
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+    this.refreshList = this.refreshList.bind(this);
+  }
+
+
+  componentDidMount() {
+    this.refreshList();
+  }
+
+  refreshList() {
+    fetch("https://localhost:44314/api/Employee").then(res => res.json()).then(
+
+      result => {
+
+        this.setState({ employees: result, errorMessage: "" });
+      }
+    ).catch((error) => {
+      this.setState({ employees: [],errorMessage: "Problem fetching data" });      
+    });
+  }
+
+
+  render() {
+
+    return (
+      <div>
+        <h2>Employee Details...</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Location</th>
+              <th>Salary</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.state.employees.map(emp => (
+              <tr key={emp.Id}>
+                <td>{emp.Id}</td>
+                <td>{emp.Name}</td>
+                <td>{emp.Location}</td>
+                <td>{emp.Salary}</td>
+              </tr>
+
+            ))}
+          </tbody>
+        </table>
+            <p><b style={{color:"red"}}>{this.state.errorMessage}</b></p>
+      </div>
+
+    )
+  }
+}
+
+class HomeComponent extends React.Component {
+  render() {
+
+    return (
+      <div>
+        <EmployeeComponent></EmployeeComponent><AddEmployeeComponent ></AddEmployeeComponent>
+
+      </div>
+    )
+  }
+}
+
+const element = <HomeComponent></HomeComponent>
+ReactDOM.render(element, document.getElementById("root"));
