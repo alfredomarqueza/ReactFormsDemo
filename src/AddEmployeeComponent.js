@@ -8,15 +8,16 @@ const AddEmployeeComponent = () => {
 
     const [message, setMessage] = useState("");
 
-    const formik = useFormik({
-        initialValues: {
+    return (
+
+        <Formik initialValues={{
+
             Id: '',
             Name: '',
             Location: '',
-            Salary: ''
-        },
+            Salary: '',
 
-        validationSchema: yup.object({
+        }} validationSchema={yup.object({
 
             Name: yup.string().max(20, 'Name should not exceed 20 Characters').
                 required('Please Enter Employee Name'),
@@ -30,9 +31,8 @@ const AddEmployeeComponent = () => {
             Location: yup.string()
                 .required('Please Enter Employee Location'),
 
-        }),
+        })} onSubmit={values => {
 
-        onSubmit: values => {
             fetch('https://localhost:44314/api/Employee', {
                 method: 'POST',
                 headers: { 'Content-type': 'application/json' },
@@ -43,43 +43,43 @@ const AddEmployeeComponent = () => {
                 }
             });
 
-        },
-    });
-    return (
-        <div>
-            <form onSubmit={formik.handleSubmit}>
-                <h2>Please Enter Employee Details...</h2>
-                <p>
+        }}>
 
-                <label htmlFor="Id">Employee Id : </label>
-                    <input type="text" name="Id" id="Id" value={formik.values.Id}
-                        onChange={formik.handleChange} onBlur={formik.handleBlur}></input>
-                    {formik.touched.Id && formik.errors.Id ? <span style={{ color: 'red' }}>{formik.errors.Id}</span> : null}
+            {props => (
+                <div>
+                    <Form>
+                        <h2>Please Enter Employee Details...</h2>
+                        <p>
+                            <label htmlFor="Id">Employee Id </label>
+                            <Field name="Id" type="number"></Field>
+                            <span style={{ color: 'red' }}><ErrorMessage name="Id"></ErrorMessage></span>
 
-                </p>
-                <p>
-                    <label htmlFor="Name">Employee Name : </label>
-                    <input type="text" name="Name" id="Name" value={formik.values.Name}
-                        onChange={formik.handleChange} onBlur={formik.handleBlur}></input>
-                    {formik.touched.Name && formik.errors.Name ? <span style={{ color: 'red' }}>{formik.errors.Name}</span> : null}
+                        </p>
+                        <p>
+                            <label htmlFor="Name">Employee Name </label>
+                            <Field name="Name" type="text"></Field>
+                            <span style={{ color: 'red' }}><ErrorMessage name="Name"></ErrorMessage></span>
 
-                </p>
-                <p>
-                    <label htmlFor="Location">Employee Location : </label>
-                    <input type="text" name="Location" id="Location" value={formik.values.Location}
-                        onChange={formik.handleChange} onBlur={formik.handleBlur}></input>
-                    {formik.touched.Location && formik.errors.Location ? <span style={{ color: 'red' }}>{formik.errors.Location}</span> : null}
+                        </p>
+                        <p>
+                            <label htmlFor="Location">Employee Location </label>
+                            <Field name="Location" type="text"></Field>
+                            <span style={{ color: 'red' }}><ErrorMessage name="Location" ></ErrorMessage></span>
 
-                </p>
-                <p>
-                    <label>Employee Salary : <input type="text" id="Salary"
-                        name="Salary" value={formik.values.Salary} onChange={formik.handleChange}></input></label>
-                </p>
-                <button type="submit">Create</button>
-            </form>
-            <p>{message}</p>
-        </div>
+                        </p>
+                        <p>
+                            <label htmlFor="Salary">Employee Salary </label>
+                            <Field name="Salary" type="number"></Field>
+                            <span style={{ color: 'red' }}><ErrorMessage name="Salary"></ErrorMessage></span>
+                        </p>
+                        <button type="submit" disabled={props.isValid==false}>Create</button>
+                    </Form>
+                    <p>{message}</p>
+                </div>
+            )}
+        </Formik>
     )
+
 }
 
 
