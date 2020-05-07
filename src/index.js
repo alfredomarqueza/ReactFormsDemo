@@ -7,9 +7,8 @@ class EmployeeComponent extends React.Component {
     super(props);
     this.state = {
       employees: [],
+      showModal:false
     };
-
-    //this.refreshList = this.refreshList.bind(this);
   }
 
 
@@ -17,7 +16,7 @@ class EmployeeComponent extends React.Component {
     this.refreshList();
   }
 
-  refreshList=()=>{
+  refreshList = () => {
     fetch("https://localhost:44314/api/Employee").then(res => res.json()).then(
 
       result => {
@@ -29,6 +28,9 @@ class EmployeeComponent extends React.Component {
     });
   }
 
+  editEmployee=()=>{
+    this.setState({showModal:!this.state.showModal});
+  }
 
   render() {
 
@@ -43,6 +45,7 @@ class EmployeeComponent extends React.Component {
                 <th>Name</th>
                 <th>Location</th>
                 <th>Salary</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -52,6 +55,12 @@ class EmployeeComponent extends React.Component {
                   <td>{emp.Name}</td>
                   <td>{emp.Location}</td>
                   <td>{emp.Salary}</td>
+                  <td>
+                    <button onClick={this.editEmployee}>Edit</button>
+                    <Modal open={this.state.showModal} close={this.editEmployee}>
+                      <EmployeeModal employee={emp}></EmployeeModal>
+                    </Modal>
+                  </td>
                 </tr>
 
               ))}
@@ -66,17 +75,48 @@ class EmployeeComponent extends React.Component {
   }
 }
 
-// class HomeComponent extends React.Component {
-//   render() {
 
-//     return (
-//       <div>
-//         <EmployeeComponent></EmployeeComponent><AddEmployeeComponent ></AddEmployeeComponent>
+class Modal extends React.Component{
+  constructor(props){
+    super(props);
+  }
 
-//       </div>
-//     )
-//   }
-// }
+  render(){
+    return(
+      this.props.open?ReactDOM.createPortal(
+        <div className="modal">
+          <button onClick={this.props.close}>X</button>
+          {this.props.children}
+        </div>,document.body):null
+      );
+  }
+}
+
+class EmployeeModal extends React.Component{
+  constructor(props){
+    super(props);
+  }
+  render(){
+    return(
+      <div>
+        <h2>Employee Details...</h2>
+        <p>
+          <label>Employee ID : <input type="text" value={this.props.employee.Id}></input></label>
+        </p>
+        <p>
+          <label>Employee Name : <input type="text" value={this.props.employee.Name}></input></label>
+        </p>
+        <p>
+          <label>Employee Location : <input type="text" value={this.props.employee.Location}></input></label>
+        </p>
+        <p>
+          <label>Employee Salary : <input type="text" value={this.props.employee.Salary}></input></label>
+        </p>
+        <input type="submit" value="Save"></input>
+      </div>
+    )
+  }
+}
 
 const element = <EmployeeComponent></EmployeeComponent>
 ReactDOM.render(element, document.getElementById("root"));
